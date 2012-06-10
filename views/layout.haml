@@ -4,11 +4,9 @@
     %script{:type => 'text/javascript', :src => '/js/elo_form.js'}
     %link{:type => 'text/css', :rel => 'stylesheet', :href => '/css/960.css'}
     %link{:type => 'text/css', :rel => 'stylesheet', :href => '/css/stylesheet.css'}
-    %title B/R Ping Pong Players
+    %title Rustici Pong Ladder
   %body.bp
     =haml :nav, :layout => false
     %br
-    - if flash[:notice]
-      .notice=flash[:notice]
     = yield
     =haml :foot, :layout => false

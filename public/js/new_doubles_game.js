@@ -24,14 +24,14 @@ $(function()
 //      $("#p4 option[value='" + player.val() + "']").attr("disabled","disabled");
 //    });
 
-    $.each(['#s1', '#s2'], function (i, op){
+    $.each(['#s1', '#s2', '#s3'], function (i, op){
       $(op).empty()
         .append(new Option(p1.val(), p1.val()))
         .append(new Option(p2.val(), p2.val()))
         .append(new Option(p3.val(), p3.val()))
         .append(new Option(p4.val(), p4.val()));
     });
-    $.each(['#s3'], function(i, op){
+    $.each(['#s4', '#s5'], function(i, op){
       $(op).empty()
         .append(new Option("", ""))
         .append(new Option(p1.val(), p1.val()))
@@ -40,12 +40,12 @@ $(function()
         .append(new Option(p4.val(), p4.val()));
     });
 
-    $.each(['#w1', '#w2'], function (i, op){
+    $.each(['#w1', '#w2', '#w3'], function (i, op){
       $(op).empty()
         .append(new Option('Team 1', 'team1'))
         .append(new Option('Team 2', 'team2'));
     });
-    $.each(['#w3'], function(i, op){
+    $.each(['#w4', '#w5'], function(i, op){
       $(op).empty()
         .append(new Option("", ""))
         .append(new Option('Team 1', 'team1'))

@@ -5,6 +5,7 @@ require 'lib/elo'
 require 'rubygems'
 require 'bundler/setup'
 
+
 require 'sinatra'
 require 'sequel'
 require 'pg'
@@ -15,26 +16,23 @@ require 'bcrypt'
 require 'rack-flash'
 require 'sinatra/redirect_with_flash'
 require 'json'
+require 'net/http'
 
 use Rack::Session::Cookie
 use Rack::Flash
 
-if ENV['RACK_ENV'] != 'production'
-  db = Sequel.connect(ENV['GT_DB_URL'])
-else
-  db = Sequel.connect(ENV['DATABASE_URL'] || 'sqlite://my.db')
-end
+  db = Sequel.connect('sqlite://my.db')
 
 before do
   @players = Player.order(:name).map(:name)
-  @current_user = current_user
-  unless request.path_info == '/log_in'
-    session[:flash] = nil 
-  end
-  require_auth = ['/new_game', '/new_user', '/update_password', '/new_doubles_game']
-  if require_auth.index(request.path_info) && !@current_user
-    not_logged_in("Please log in")
-  end
+  #@current_user = current_user
+  #unless request.path_info == '/log_in'
+  #  session[:flash] = nil 
+  #end
+  #require_auth = ['/new_game', '/new_user', '/update_password', '/new_doubles_game']
+  #if require_auth.index(request.path_info) && !@current_user
+  #  not_logged_in("Please log in")
+  #end
 end
 
 helpers do
@@ -96,27 +94,14 @@ class Player < Sequel::Model
   end
 
   def self.new_player(name, email, department, password)
-    password_salt = BCrypt::Engine.generate_salt
-    password_hash = BCrypt::Engine.hash_secret(password, password_salt)
     Player.create(
       :name => name.capitalize, 
       :email => email,
-      :password_hash => password_hash,
-      :password_salt => password_salt,
       :department => department.capitalize,
-      :sets_elo => 0,
-      :games_elo => 0,
+      :sets_elo => 1000,
+      :games_elo => 1000,
       :created_at => Time.now())
   end
-
-  def self.authenticate(email, password)  
-    player = Player.filter(:email => email).first
-    if player && !player.password_hash.nil? && (player.password_hash == BCrypt::Engine.hash_secret(password, player.password_salt) )
-      player
-    else  
-      nil  
-    end  
-  end  
 
 end
 
@@ -201,9 +186,13 @@ class GameTracker < Sinatra::Application
 
   def calc_doubles_sets_elo(w, l)
     w_cur_elo = DoublesTeam.filter(:id => w).first[:sets_elo] || 0
+    puts "w_cur_elo #{w_cur_elo}"
     l_cur_elo = DoublesTeam.filter(:id => l).first[:sets_elo] || 0
+    puts "l_cur_elo #{l_cur_elo}"
     w_elo = Elo.compute(w_cur_elo, [ [ l_cur_elo, 1] ] )
+    puts "w_elo #{w_elo}"
     l_elo = Elo.compute(l_cur_elo, [ [ w_cur_elo, 0] ] )
+    puts "l_elo #{l_elo}"
     DoublesTeam.filter(:id => w).update(:sets_elo => w_elo)
     DoublesTeam.filter(:id => l).update(:sets_elo => l_elo)
     {:winner => w_elo, :loser => l_elo}
@@ -218,6 +207,35 @@ class GameTracker < Sinatra::Application
     Player.filter(:id => l).update(:sets_elo => l_elo)
     {:winner => w_elo, :loser => l_elo}
   end
+
+  def send_statement(w, l)
+    w_email = Player.filter(:id => w).first[:email] || "blank@example.com"
+    l_email = Player.filter(:id => l).first[:email] || "blank@example.com"
+    l_name  = Player.filter(:id => l).first[:name]
+    w_name  = Player.name_from_id(w)
+    
+    @host = 'cloud.scorm.com'
+    @port = '80'
+    @user = 'TestUser'
+    @pass = 'password'
+
+    @post_ws = "/ScormEngineInterface/TCAPI/public/statements"
+    @payload ={
+      "actor" => {"mbox" => ["mailto:#{w_email}"], "name" => ["#{w_name}"], "objectType" =>"Person"    },
+      "verb" => "experienced",
+      "object" => { "definition" => {"name" => {"en-US" => "Beating #{l_name} at Rustici PingPong"}}, "id" => "http://scorm.com/pong/beat#{l_name}", "objectType" => "Activity"}
+    }.to_json
+
+    puts @payload
+    
+    req = Net::HTTP::Post.new(@post_ws, initheader = {'Content-Type' =>'application/json'})
+    req.basic_auth @user, @pass
+    req.body = @payload
+    response = Net::HTTP.new(@host, @port).start {|http| http.request(req) }
+    puts "Response #{response.code} #{response.message}:#{response.body}"
+    
+  end
+
 
   def calc_games_elo(w, l)
     w_id = Player.id_from_name(w)
@@ -343,9 +361,9 @@ class GameTracker < Sinatra::Application
   end
 
   post '/new_doubles_game' do
-puts params.inspect
+  puts params.inspect
     winners = []
-    ["winner1", "winner2", "winner3"].each do |w|
+    ["winner1", "winner2", "winner3", "winner4", "winner5"].each do |w|
       if params[w] != ""
         winners << params[w]
       end
@@ -361,11 +379,11 @@ puts params.inspect
     team1_id = DoublesTeam.id_from_players(team1[0], team1[1])
     team2_id = DoublesTeam.id_from_players(team2[0], team2[1])
     if (team1_id == nil)
-      t1 = DoublesTeam.create(:player1 => team1[0], :player2 => team1[1], :created_at => Time.now())
+      t1 = DoublesTeam.create(:player1 => team1[0], :player2 => team1[1], :created_at => Time.now(), :sets_elo => 1000)
       team1_id = t1.id
     end
     if (team2_id == nil)
-      t2 = DoublesTeam.create(:player1 => team2[0], :player2 => team2[1], :created_at => Time.now())
+      t2 = DoublesTeam.create(:player1 => team2[0], :player2 => team2[1], :created_at => Time.now(), :sets_elo => 1000)
       team2_id = t2.id
     end
 
@@ -395,10 +413,20 @@ puts params.inspect
     else
       save_doubles_game(team2[0], team2[1], team1[0], team1[1], team2_id, team1_id, params[:served2], params[:score2], set[:id]);
     end
-    if winners[2] && winners[2] == 'team1'
+    if winners[2] == 'team1'
       save_doubles_game(team1[0], team1[1], team2[0], team2[1], team1_id, team2_id, params[:served3], params[:score3], set[:id]);
-    elsif winners[2]
+    else
       save_doubles_game(team2[0], team2[1], team1[0], team1[1], team2_id, team1_id, params[:served3], params[:score3], set[:id]);
+    end
+    if winners[3] && winners[3] == 'team1'
+      save_doubles_game(team1[0], team1[1], team2[0], team2[1], team1_id, team2_id, params[:served4], params[:score4], set[:id]);
+    elsif winners[3]
+      save_doubles_game(team2[0], team2[1], team1[0], team1[1], team2_id, team1_id, params[:served4], params[:score4], set[:id]);
+    end
+    if winners[4] && winners[4] == 'team1'
+      save_doubles_game(team1[0], team1[1], team2[0], team2[1], team1_id, team2_id, params[:served5], params[:score5], set[:id]);
+    elsif winners[4]
+      save_doubles_game(team2[0], team2[1], team1[0], team1[1], team2_id, team1_id, params[:served5], params[:score5], set[:id]);
     end
 
     redirect '/'
@@ -420,6 +448,10 @@ puts params.inspect
     set_winner = set_winner([params[:winner1], params[:winner2], params[:winner3]])
     set_winner_id = Player.id_from_name(set_winner)
     set_loser_id = Player.id_from_name( players - [set_winner])
+
+    #Rustici Mod - Send TinCanAPI Statement about winner and loser
+    send_statement(set_winner_id, set_loser_id)
+
     sets_elo = calc_sets_elo(set_winner_id, set_loser_id)
     set = GameSet.create(:winner_id => set_winner_id, :loser_id => set_loser_id, :created_at => Time.now(), :winner_elo => sets_elo[:winner], :loser_elo => sets_elo[:loser])
 
@@ -456,14 +488,14 @@ puts params.inspect
   end
 
   post '/log_in' do
-    player = Player.authenticate(params[:email], params[:password])
-    if player
-      session[:player] = player
-      flash.now[:notice] = "Signed-in"  
+    #player = Player.authenticate(params[:email], params[:password])
+    #if player
+    #  session[:player] = player
+    #  flash.now[:notice] = "Signed-in"  
       redirect '/'
-    else
-      not_logged_in("Invalid email or password")
-    end
+    #else
+    #  not_logged_in("Invalid email or password")
+    #end
   end
 
   get '/log_out' do
