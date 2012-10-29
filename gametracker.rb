@@ -218,8 +218,8 @@ class GameTracker < Sinatra::Application
     @port = '80'
     @user = 'TestUser'
     @pass = 'password'
-
     @post_ws = "/ScormEngineInterface/TCAPI/public/statements"
+
     @payload ={
       "actor" => {"mbox" => ["mailto:#{w_email}"], "name" => ["#{w_name}"], "objectType" =>"Person"    },
       "verb" => "experienced",
@@ -233,6 +233,51 @@ class GameTracker < Sinatra::Application
     req.body = @payload
     response = Net::HTTP.new(@host, @port).start {|http| http.request(req) }
     puts "Response #{response.code} #{response.message}:#{response.body}"
+
+
+    @user_family = "0YPSZ3S4LA"
+    @pass_family = "Wpy1axMyvPmdQbpPB1a4vDdYVLAJ6sdvd8569WAj"
+    @post_family = "/ScormEngineInterface/TCAPI/MLEARNCONA/statements"
+
+    req = Net::HTTP::Post.new(@post_family, initheader = {'Content-Type' =>'application/json'})
+    req.basic_auth @user_family, @pass_family
+    req.body = @payload
+    response = Net::HTTP.new(@host, @port).start {|http| http.request(req) }
+    puts "Response #{response.code} #{response.message}:#{response.body}"
+
+    @host_watershed = "watershed.ws"
+    @user_watershed = "tj.seabrooks+pong@scorm.com"
+    @pass_watershed = "scorm2004"
+    @post_watershed = "/tc/statements"
+
+    @payload_95 = {
+      "actor" => {
+        "mbox" => "mailto:#{w_email}", 
+        "name" => "#{w_name}", 
+        "objectType" =>"Agent"    
+      },
+
+      "verb" => {
+        "id" => "http://tincanapi.com/rustici/verbs/pongwin",
+        "display" => {
+          "en-US" =>"Won Rustici Pong Against"
+        }
+      },
+
+      "object" => { 
+        "mbox" => "mailto:#{l_email}", 
+        "name" => "#{l_name}",  
+        "objectType" => "Agent"
+      }
+    }.to_json
+
+    req = Net::HTTP::Post.new(@post_watershed, initheader = {'Content-Type' =>'application/json'})
+    req.basic_auth @host_watershed, @user_watershed
+    req.body = @payload_95
+    response = Net::HTTP.new(@host_watershed, @port).start {|http| http.request(req) }
+    puts "Response #{response.code} #{response.message}:#{response.body}"
+
+
     
   end
 
