@@ -16,6 +16,8 @@ require 'bcrypt'
 require 'rack-flash'
 require 'sinatra/redirect_with_flash'
 require 'json'
+
+require "net/https"
 require 'net/http'
 
 use Rack::Session::Cookie
@@ -245,7 +247,7 @@ class GameTracker < Sinatra::Application
     response = Net::HTTP.new(@host, @port).start {|http| http.request(req) }
     puts "Response #{response.code} #{response.message}:#{response.body}"
 
-    @host_watershed = "https://watershed.ws"
+    @host_watershed = "watershed.ws"
     @user_watershed = "tj.seabrooks+pong@scorm.com"
     @pass_watershed = "scorm2004"
     @post_watershed = "/tc/statements"
@@ -274,6 +276,7 @@ class GameTracker < Sinatra::Application
     req = Net::HTTP::Post.new(@post_watershed, initheader = {'Content-Type' =>'application/json'})
     req.basic_auth @user_watershed, @pass_watershed
     req.body = @payload_95
+    req.use_ssl = true
     response = Net::HTTP.new(@host_watershed, @port).start {|http| http.request(req) }
     puts "Response #{response.code} #{response.message}:#{response.body}"
 
