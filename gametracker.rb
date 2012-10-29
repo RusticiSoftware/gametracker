@@ -276,11 +276,11 @@ class GameTracker < Sinatra::Application
     req = Net::HTTP::Post.new(@post_watershed, initheader = {'Content-Type' =>'application/json'})
     req.basic_auth @user_watershed, @pass_watershed
     req.body = @payload_95
-    response = Net::HTTP.new(@host_watershed, @port).start {|http| 
+    response = Net::HTTP.start(@host_watershed, @port) do |http| 
       http.use_ssl = true
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       http.request(req)
-    }
+    end
     puts "Response #{response.code} #{response.message}:#{response.body}"
 
 
