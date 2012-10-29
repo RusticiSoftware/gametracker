@@ -279,7 +279,6 @@ class GameTracker < Sinatra::Application
 
     uri = URI.parse("https://watershed.ws")
     http = Net::HTTP.new(uri.host, uri.port)
-    http = Net::HTTP.new(@host_watershed, @port)
     http.use_ssl = true
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE 
 
