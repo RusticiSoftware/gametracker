@@ -245,7 +245,7 @@ class GameTracker < Sinatra::Application
     response = Net::HTTP.new(@host, @port).start {|http| http.request(req) }
     puts "Response #{response.code} #{response.message}:#{response.body}"
 
-    @host_watershed = "watershed.ws"
+    @host_watershed = "https://watershed.ws"
     @user_watershed = "tj.seabrooks+pong@scorm.com"
     @pass_watershed = "scorm2004"
     @post_watershed = "/tc/statements"
