@@ -272,7 +272,7 @@ class GameTracker < Sinatra::Application
     }.to_json
 
     req = Net::HTTP::Post.new(@post_watershed, initheader = {'Content-Type' =>'application/json'})
-    req.basic_auth @host_watershed, @user_watershed
+    req.basic_auth @user_watershed, @pass_watershed
     req.body = @payload_95
     response = Net::HTTP.new(@host_watershed, @port).start {|http| http.request(req) }
     puts "Response #{response.code} #{response.message}:#{response.body}"
