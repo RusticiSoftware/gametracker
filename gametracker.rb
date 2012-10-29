@@ -17,6 +17,8 @@ require 'rack-flash'
 require 'sinatra/redirect_with_flash'
 require 'json'
 
+require "uri"
+
 require "net/https"
 require 'net/http'
 
@@ -273,6 +275,10 @@ class GameTracker < Sinatra::Application
       }
     }.to_json
 
+
+
+    uri = URI.parse("https://watershed.ws")
+    http = Net::HTTP.new(uri.host, uri.port)
     http = Net::HTTP.new(@host_watershed, @port)
     http.use_ssl = true
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE 
