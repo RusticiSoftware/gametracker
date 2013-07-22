@@ -7,11 +7,12 @@
     %link{:type => 'text/css', :rel => 'stylesheet', :href => '/css/stylesheet.css'}
     %title Rustici Pong Ladder
   %body{:style => 'background-color: #8b8989;'}
-    %div{:class => 'container'}
+    %div{:class => 'container-fluid'}
       =haml :nav, :layout => false
       %script{:type => 'text/javascript', :src => '/js/jquery-1.10.2.min.js'}
       %script{:type => 'text/javascript', :src => '/js/highcharts.js'}
       %script{:type => 'text/javascript', :src => '/js/bootstrap.min.js'}
       %script{:type => 'text/javascript', :src => '/js/elo_form.js'}
+      %script{:type => 'text/javascript', :src => '/js/gametracker.js'}
       = yield
       =haml :foot, :layout => false

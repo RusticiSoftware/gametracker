@@ -1,64 +1,12 @@
-%div.row
-  %form.form-horizontal{ :action => "/new_game", :method => "post"}
-    %fieldset
-      %b Players:
-      %div.row
-        %div.span6
-          %div.control-group
-            %label.control-label{:for => "player1"}Player 1
-            %div.controls
-              %select{:name => "player1", :id => "p1"}
-                - @players.each do |player|
-                  %option{:value => player}=player
-        %div.span6
-          %div.control-group
-            %label.control-label{:for => "player2"}Player 2
-            %div.controls
-              %select{:name => "player2", :id => "p2"}
-                - @players.each do |player|
-                  %option{:value => player}=player
-      %div.row
-      %div.span4.offset3
-        %b Game 1:
-        %div.control-group
-          %label.control-label{:for => "served1"} Served:
-          %div.controls
-            %select{:name => "served1", :id => "s1"}
-        %div.control-group
-          %label.control-label{:for => "winner1"} Winner:
-          %div.controls
-            %select{:name => "winner1", :id => "w1"}
-        %div.control-group
-          %label.control-label{:for => "score1"} Score:
-          %div.controls
-            %input{:type => "text", :name => "score1", :id => "sc1"}
-        %b Game 2:
-        %div.control-group
-          %label.control-label{:for => "served2"} Served:
-          %div.controls
-            %select{:name => "served2", :id => "s2"}
-        %div.control-group
-          %label.control-label{:for => "winner2"} Winner:
-          %div.controls
-            %select{:name => "winner2", :id => "w2"}
-        %div.control-group
-          %label.control-label{:for => "score2"} Score:
-          %div.controls
-            %input{:type => "text", :name => "score2", :id => "sc2"}
-        %b Game 3 (if necessary):
-        %div.control-group
-          %label.control-label{:for => "served3"} Served:
-          %div.controls
-            %select{:name => "served3", :id => "s3"}
-        %div.control-group
-          %label.control-label{:for => "winner3"} Winner:
-          %div.controls
-            %select{:name => "winner3", :id => "w3"}
-        %div.control-group
-          %label.control-label{:for => "score3"} Score:
-          %div.controls
-            %input{:type => "text", :name => "score3", :id => "sc3"}
-        %div.control-group
-          %div.controls
-            %input{:type => "submit", :value => "Send", :class => "btn btn-primary"}
-%script{:type => 'text/javascript', :src => 'js/new_game.js'}
+%div.page-header
+  %h3.text-center Add New Game
+%div.row-fluid
+  %form.form-horizontal{ :action => '/new_game', :method => 'post'}
+    =haml :new_game_inner, :layout => false
+    %hr
+    %div.offset4.span3
+      %div.control-group
+        %div.controls
+          %input.btn.btn-primary.btn-large.btn-block{:type => 'submit', :value => 'Save'}
+:javascript
+  gametracker.newGameShown();

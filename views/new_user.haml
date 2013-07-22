@@ -1,23 +1,10 @@
-%div.row
+%div.page-header
+  %h3.text-center Add New User
+%div.row-fluid
   %form.form-horizontal{:action => '/new_user', :method => 'post'}
-    %fieldset
-      %h3 New User:
-      %div.control-group
-        %label.control-label{:for => 'name'} Name:
-        %div.controls
-          %input{:type => 'text', :name => 'name', :class => 'text'}
-      %div.control-group
-        %label.control-label{:for => 'email'} Email:
-        %div.controls
-          %input{:type => 'text', :name => 'email', :class => 'text'}
-      %div.control-group
-        %label.control-label{:for => 'department'} Department:
-        %div.controls
-          %input{:type => 'text', :name => 'department', :class => 'text'}
-      %div.control-group
-        %label.control-label{:for => 'password'} Password:
-        %div.controls
-          %input{:type => 'password', :name => 'password', :class => 'text'}
+    =haml :new_user_inner, :layout => false
+    %hr
+    %div.offset4.span3
       %div.control-group
         %div.controls
-          %input{:type => 'submit', :value => 'Send', :class => 'btn btn-primary'}
+          %input.btn.btn-primary.btn-large.btn-block{:type => 'submit', :value => 'Save'}

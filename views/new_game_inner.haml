@@ -1,0 +1,12 @@
+%div.row-fluid
+  %div.span6
+    =haml :player, :layout => false, :locals => { :n => 1 }
+  %div.span6
+    =haml :player, :layout => false, :locals => { :n => 2 }
+%div.row-fluid
+  %div.span4
+    =haml :game, :layout => false, :locals => { :n => 1 }
+  %div.span4
+    =haml :game, :layout => false, :locals => { :n => 2 }
+  %div.span4
+    =haml :game, :layout => false, :locals => { :n => 3, :necessary => false }
