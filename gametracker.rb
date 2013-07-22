@@ -17,15 +17,15 @@ require 'rack-flash'
 require 'sinatra/redirect_with_flash'
 require 'json'
 
-require "uri"
+require 'uri'
 
-require "net/https"
+require 'net/https'
 require 'net/http'
 
 use Rack::Session::Cookie
 use Rack::Flash
 
-  db = Sequel.connect('sqlite://my.db')
+db = Sequel.connect('sqlite://my.db')
 
 before do
   @players = Player.order(:name).map(:name)
@@ -94,17 +94,17 @@ class Player < Sequel::Model
   def self.update_password(user, password)
     password_salt = BCrypt::Engine.generate_salt
     password_hash = BCrypt::Engine.hash_secret(password, password_salt)
-    temp = Player.filter(:id => user.id).update(:password_hash => password_hash, :password_salt => password_salt)
+    Player.filter(:id => user.id).update(:password_hash => password_hash, :password_salt => password_salt)
   end
 
   def self.new_player(name, email, department, password)
     Player.create(
-      :name => name.capitalize, 
-      :email => email,
-      :department => department.capitalize,
-      :sets_elo => 1000,
-      :games_elo => 1000,
-      :created_at => Time.now())
+        :name => name.capitalize,
+        :email => email,
+        :department => department.capitalize,
+        :sets_elo => 1000,
+        :games_elo => 1000,
+        :created_at => Time.now())
   end
 
 end
@@ -121,8 +121,8 @@ class GameTracker < Sinatra::Application
     teams.each do |t|
       ranked.push({:p1 => Player.name_from_id(t[:player1]), :p2 => Player.name_from_id(t[:player2]), :sets_elo => t[:sets_elo]})
     end
-     
-    ranked = ranked.sort_by{|k| k[:sets_elo]}.reverse
+
+    ranked = ranked.sort_by { |k| k[:sets_elo] }.reverse
     return ranked
   end
 
@@ -133,19 +133,19 @@ class GameTracker < Sinatra::Application
     players.each do |p|
       wins = GameSet.filter(:winner_id => p[:id]).count || 0
       loses = GameSet.filter(:loser_id => p[:id]).count || 0
-      if (wins == 0 && loses == 0) 
+      if wins == 0 && loses == 0
         percentage = 0
-      else 
+      else
         percentage = (wins/(wins+loses).to_f).round(3) * 100
       end
-      if ((wins + loses) > 2)
+      if (wins + loses) > 2
         ranked.push({:name => p[:name], :wins => wins, :loses => loses, :percentage => percentage, :department => p[:department], :sets_elo => p[:sets_elo], :games_elo => p[:games_elo]})
       else
         unranked.push({:name => p[:name], :wins => wins, :loses => loses, :percentage => percentage, :department => p[:department], :sets_elo => p[:sets_elo], :games_elo => p[:games_elo]})
       end
     end
-     
-    ranked = ranked.sort_by{|k| k[:sets_elo]}.reverse
+
+    ranked = ranked.sort_by { |k| k[:sets_elo] }.reverse
     return ranked, unranked
   end
 
@@ -159,32 +159,32 @@ class GameTracker < Sinatra::Application
     points = score.split('-')
     elo = calc_games_elo(winner, loser);
     game = Game.create(
-      :winner_id => Player.id_from_name(winner),
-      :loser_id => Player.id_from_name(loser),
-      :served => Player.id_from_name(served),
-      :winner_score => points[0],
-      :loser_score => points[1],
-      :set_id => set,
-      :created_at => Time.now(),
-      :winner_elo => elo[:winner],
-      :loser_elo => elo[:loser]
+        :winner_id => Player.id_from_name(winner),
+        :loser_id => Player.id_from_name(loser),
+        :served => Player.id_from_name(served),
+        :winner_score => points[0],
+        :loser_score => points[1],
+        :set_id => set,
+        :created_at => Time.now(),
+        :winner_elo => elo[:winner],
+        :loser_elo => elo[:loser]
     )
   end
 
   def save_doubles_game(winner1, winner2, loser1, loser2, winner_team, loser_team, served, score, set)
     points = score.split('-')
     doublesgame = DoublesGame.create(
-      :winner1_id => winner1,
-      :winner2_id => winner2,
-      :loser1_id => loser1,
-      :loser2_id => loser2,
-      :winner_team_id => winner_team,
-      :loser_team_id => loser_team,
-      :served_id => Player.id_from_name(served),
-      :winner_score => points[0],
-      :loser_score => points[1],
-      :set_id => set,
-      :created_at => Time.now()
+        :winner1_id => winner1,
+        :winner2_id => winner2,
+        :loser1_id => loser1,
+        :loser2_id => loser2,
+        :winner_team_id => winner_team,
+        :loser_team_id => loser_team,
+        :served_id => Player.id_from_name(served),
+        :winner_score => points[0],
+        :loser_score => points[1],
+        :set_id => set,
+        :created_at => Time.now()
     )
   end
 
@@ -193,9 +193,9 @@ class GameTracker < Sinatra::Application
     puts "w_cur_elo #{w_cur_elo}"
     l_cur_elo = DoublesTeam.filter(:id => l).first[:sets_elo] || 0
     puts "l_cur_elo #{l_cur_elo}"
-    w_elo = Elo.compute(w_cur_elo, [ [ l_cur_elo, 1] ] )
+    w_elo = Elo.compute(w_cur_elo, [[l_cur_elo, 1]])
     puts "w_elo #{w_elo}"
-    l_elo = Elo.compute(l_cur_elo, [ [ w_cur_elo, 0] ] )
+    l_elo = Elo.compute(l_cur_elo, [[w_cur_elo, 0]])
     puts "l_elo #{l_elo}"
     DoublesTeam.filter(:id => w).update(:sets_elo => w_elo)
     DoublesTeam.filter(:id => l).update(:sets_elo => l_elo)
@@ -205,8 +205,8 @@ class GameTracker < Sinatra::Application
   def calc_sets_elo(w, l)
     w_cur_elo = Player.filter(:id => w).first[:sets_elo] || 0
     l_cur_elo = Player.filter(:id => l).first[:sets_elo] || 0
-    w_elo = Elo.compute(w_cur_elo, [ [ l_cur_elo, 1] ] )
-    l_elo = Elo.compute(l_cur_elo, [ [ w_cur_elo, 0] ] )
+    w_elo = Elo.compute(w_cur_elo, [[l_cur_elo, 1]])
+    l_elo = Elo.compute(l_cur_elo, [[w_cur_elo, 0]])
     Player.filter(:id => w).update(:sets_elo => w_elo)
     Player.filter(:id => l).update(:sets_elo => l_elo)
     {:winner => w_elo, :loser => l_elo}
@@ -215,9 +215,9 @@ class GameTracker < Sinatra::Application
   def send_statement(w, l)
     w_email = Player.filter(:id => w).first[:email] || "blank@example.com"
     l_email = Player.filter(:id => l).first[:email] || "blank@example.com"
-    l_name  = Player.filter(:id => l).first[:name]
-    w_name  = Player.name_from_id(w)
-    
+    l_name = Player.filter(:id => l).first[:name]
+    w_name = Player.name_from_id(w)
+
     @host = 'cloud.scorm.com'
     @port = '80'
     @user = 'TestUser'
@@ -225,17 +225,17 @@ class GameTracker < Sinatra::Application
     @post_ws = "/ScormEngineInterface/TCAPI/public/statements"
 
     @payload ={
-      "actor" => {"mbox" => ["mailto:#{w_email}"], "name" => ["#{w_name}"], "objectType" =>"Person"    },
-      "verb" => "experienced",
-      "object" => { "definition" => {"name" => {"en-US" => "Beating #{l_name} at Rustici PingPong"}}, "id" => "http://scorm.com/pong/beat#{l_name}", "objectType" => "Activity"}
+        "actor" => {"mbox" => ["mailto:#{w_email}"], "name" => ["#{w_name}"], "objectType" => "Person"},
+        "verb" => "experienced",
+        "object" => {"definition" => {"name" => {"en-US" => "Beating #{l_name} at Rustici PingPong"}}, "id" => "http://scorm.com/pong/beat#{l_name}", "objectType" => "Activity"}
     }.to_json
 
     puts @payload
-    
-    req = Net::HTTP::Post.new(@post_ws, initheader = {'Content-Type' =>'application/json'})
+
+    req = Net::HTTP::Post.new(@post_ws, initheader = {'Content-Type' => 'application/json'})
     req.basic_auth @user, @pass
     req.body = @payload
-    response = Net::HTTP.new(@host, @port).start {|http| http.request(req) }
+    response = Net::HTTP.new(@host, @port).start { |http| http.request(req) }
     puts "Response #{response.code} #{response.message}:#{response.body}"
 
 
@@ -243,10 +243,10 @@ class GameTracker < Sinatra::Application
     @pass_family = "Wpy1axMyvPmdQbpPB1a4vDdYVLAJ6sdvd8569WAj"
     @post_family = "/ScormEngineInterface/TCAPI/MLEARNCONA/statements"
 
-    req = Net::HTTP::Post.new(@post_family, initheader = {'Content-Type' =>'application/json'})
+    req = Net::HTTP::Post.new(@post_family, initheader = {'Content-Type' => 'application/json'})
     req.basic_auth @user_family, @pass_family
     req.body = @payload
-    response = Net::HTTP.new(@host, @port).start {|http| http.request(req) }
+    response = Net::HTTP.new(@host, @port).start { |http| http.request(req) }
     puts "Response #{response.code} #{response.message}:#{response.body}"
 
     @host_watershed = "watershed.ws"
@@ -255,41 +255,39 @@ class GameTracker < Sinatra::Application
     @post_watershed = "/tc/statements"
 
     @payload_95 = {
-      "actor" => {
-        "mbox" => "mailto:#{w_email}", 
-        "name" => "#{w_name}", 
-        "objectType" =>"Agent"    
-      },
+        "actor" => {
+            "mbox" => "mailto:#{w_email}",
+            "name" => "#{w_name}",
+            "objectType" => "Agent"
+        },
 
-      "verb" => {
-        "id" => "http://tincanapi.com/rustici/verbs/pongwin",
-        "display" => {
-          "en-US" =>"Won Rustici Pong Against"
+        "verb" => {
+            "id" => "http://tincanapi.com/rustici/verbs/pongwin",
+            "display" => {
+                "en-US" => "Won Rustici Pong Against"
+            }
+        },
+
+        "object" => {
+            "mbox" => "mailto:#{l_email}",
+            "name" => "#{l_name}",
+            "objectType" => "Agent"
         }
-      },
-
-      "object" => { 
-        "mbox" => "mailto:#{l_email}", 
-        "name" => "#{l_name}",  
-        "objectType" => "Agent"
-      }
     }.to_json
-
 
 
     uri = URI.parse("https://watershed.ws")
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE 
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
-    req = Net::HTTP::Post.new(@post_watershed, initheader = {'Content-Type' =>'application/json'})
+    req = Net::HTTP::Post.new(@post_watershed, initheader = {'Content-Type' => 'application/json'})
     req.basic_auth @user_watershed, @pass_watershed
     req.body = @payload_95
     response = http.request(req)
     puts "Response #{response.code} #{response.message}:#{response.body}"
 
 
-    
   end
 
 
@@ -298,8 +296,8 @@ class GameTracker < Sinatra::Application
     l_id = Player.id_from_name(l)
     w_cur_elo = Player.filter(:id => w_id).first[:games_elo] || 0
     l_cur_elo = Player.filter(:id => l_id).first[:games_elo] || 0
-    w_elo = Elo.compute(w_cur_elo, [ [ l_cur_elo, 1] ] )
-    l_elo = Elo.compute(l_cur_elo, [ [ w_cur_elo, 0] ] )
+    w_elo = Elo.compute(w_cur_elo, [[l_cur_elo, 1]])
+    l_elo = Elo.compute(l_cur_elo, [[w_cur_elo, 0]])
     Player.filter(:id => w_id).update(:games_elo => w_elo)
     Player.filter(:id => l_id).update(:games_elo => l_elo)
     {:winner => w_elo, :loser => l_elo}
@@ -314,12 +312,12 @@ class GameTracker < Sinatra::Application
     end
     sets.each do |set|
       sets_with_game_count.push({
-        :winner => Player.name_from_id(set[:winner_id]),
-        :loser => Player.name_from_id(set[:loser_id]),
-        :winner_elo => set[:winner_elo],
-        :loser_elo => set[:loser_elo],
-        :num_games => Game.filter(:set_id => set[:id].to_s()).count
-      })
+                                    :winner => Player.name_from_id(set[:winner_id]),
+                                    :loser => Player.name_from_id(set[:loser_id]),
+                                    :winner_elo => set[:winner_elo],
+                                    :loser_elo => set[:loser_elo],
+                                    :num_games => Game.filter(:set_id => set[:id].to_s()).count
+                                })
     end
     sets_with_game_count
   end
@@ -333,12 +331,12 @@ class GameTracker < Sinatra::Application
     end
     dsets.each do |set|
       dsets_with_game_count.push({
-        :w1 => Player.name_from_id(set[:winner1_id]),
-        :w2 => Player.name_from_id(set[:winner2_id]),
-        :l1 => Player.name_from_id(set[:loser1_id]),
-        :l2 => Player.name_from_id(set[:loser2_id]),
-        :num_games => DoublesGame.filter(:set_id => set[:id]).count
-      })
+                                     :w1 => Player.name_from_id(set[:winner1_id]),
+                                     :w2 => Player.name_from_id(set[:winner2_id]),
+                                     :l1 => Player.name_from_id(set[:loser1_id]),
+                                     :l2 => Player.name_from_id(set[:loser2_id]),
+                                     :num_games => DoublesGame.filter(:set_id => set[:id]).count
+                                 })
     end
     dsets_with_game_count
   end
@@ -376,7 +374,7 @@ class GameTracker < Sinatra::Application
       difference = (winner_previous_elo - loser_previous_elo).abs
       scale = difference == 0 ? 0 : 1 / difference.to_f
       if user_id == game[:loser_id].to_s
-        scale = scale * -1 
+        scale = scale * -1
         opponents << Player.name_from_id(game[:winner_id])
       else
         opponents << Player.name_from_id(game[:loser_id])
@@ -417,7 +415,7 @@ class GameTracker < Sinatra::Application
   end
 
   post '/new_doubles_game' do
-  puts params.inspect
+    puts params.inspect
     winners = []
     ["winner1", "winner2", "winner3", "winner4", "winner5"].each do |w|
       if params[w] != ""
@@ -452,12 +450,12 @@ class GameTracker < Sinatra::Application
       set_loser_id = team1_id
     end
     sets_elo = calc_doubles_sets_elo(set_winner_id, set_loser_id)
- 
+
     if set_winner == 'team1'
       set = DoublesSet.create(:winner1_id => team1[0], :winner2_id => team1[1], :loser1_id => team2[0], :loser2_id => team2[1], :winner_team_id => team1_id, :loser_team_id => team2_id, :created_at => Time.now(), :winner_elo => sets_elo[:winner], :loser_elo => sets_elo[:loser])
     elsif set_winner == 'team2'
       set = DoublesSet.create(:winner1_id => team2[0], :winner2_id => team2[1], :loser1_id => team1[0], :loser2_id => team1[1], :winner_team_id => team2_id, :loser_team_id => team1_id, :created_at => Time.now(), :winner_elo => sets_elo[:winner], :loser_elo => sets_elo[:loser])
-    end 
+    end
 
     if winners[0] == 'team1'
       save_doubles_game(team1[0], team1[1], team2[0], team2[1], team1_id, team2_id, params[:served1], params[:score1], set[:id]);
@@ -503,7 +501,7 @@ class GameTracker < Sinatra::Application
 
     set_winner = set_winner([params[:winner1], params[:winner2], params[:winner3]])
     set_winner_id = Player.id_from_name(set_winner)
-    set_loser_id = Player.id_from_name( players - [set_winner])
+    set_loser_id = Player.id_from_name(players - [set_winner])
 
     #Rustici Mod - Send TinCanAPI Statement about winner and loser
     send_statement(set_winner_id, set_loser_id)
@@ -532,10 +530,10 @@ class GameTracker < Sinatra::Application
   get '/elo_ratings' do
     p1_cur_elo = Player.filter(:name => params[:p1]).first[:sets_elo]
     p2_cur_elo = Player.filter(:name => params[:p2]).first[:sets_elo]
-    p1_wins = Elo.compute(p1_cur_elo, [ [ p2_cur_elo, 1] ] )
-    p1_loses = Elo.compute(p1_cur_elo, [ [ p2_cur_elo, 0] ] )
-    p2_wins = Elo.compute(p2_cur_elo, [ [ p1_cur_elo, 1] ] )
-    p2_loses = Elo.compute(p2_cur_elo, [ [ p1_cur_elo, 0] ] )
+    p1_wins = Elo.compute(p1_cur_elo, [[p2_cur_elo, 1]])
+    p1_loses = Elo.compute(p1_cur_elo, [[p2_cur_elo, 0]])
+    p2_wins = Elo.compute(p2_cur_elo, [[p1_cur_elo, 1]])
+    p2_loses = Elo.compute(p2_cur_elo, [[p1_cur_elo, 0]])
     return {:p1_wins => p1_wins, :p1_loses => p1_loses, :p2_wins => p2_wins, :p2_loses => p2_loses, :p1_cur => p1_cur_elo, :p2_cur => p2_cur_elo}.to_json
   end
 
@@ -548,7 +546,7 @@ class GameTracker < Sinatra::Application
     #if player
     #  session[:player] = player
     #  flash.now[:notice] = "Signed-in"  
-      redirect '/'
+    redirect '/'
     #else
     #  not_logged_in("Invalid email or password")
     #end
@@ -559,7 +557,8 @@ class GameTracker < Sinatra::Application
     redirect '/'
   end
 
-  get "/css/:sheet.css" do |sheet|
+  get '/css/:sheet.css' do |sheet|
+    headers 'Content-Type' => 'text/css; charset=utf-8'
     sass :"css/#{sheet}"
   end
 
@@ -573,7 +572,7 @@ class GameTracker < Sinatra::Application
   end
 
   get '/ranks' do
-    rankings = compute_doubles_rankings 
+    rankings = compute_doubles_rankings
     rankings.to_json
   end
 

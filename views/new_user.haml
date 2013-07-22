@@ -1,13 +1,23 @@
-#container.container_16
-  %br  
-  %form{ :action => "/new_user", :method => "post"}
+%div.row
+  %form.form-horizontal{:action => '/new_user', :method => 'post'}
     %fieldset
-      %label{:for => "name"} Name:
-      %input{:type => "text", :name => "name", :class => "text"}
-      %label{:for => "email"} Email:
-      %input{:type => "text", :name => "email", :class => "text"}
-      %label{:for => "department"} Department:
-      %input{:type => "text", :name => "department", :class => "text"}
-      %label{:for => "password"} Password:
-      %input{:type => "password", :name => "password", :class => "text"}
-    %input{:type => "submit", :value => "Send", :class => "button"}
+      %b New User:
+      %div.control-group
+        %label.control-label{:for => 'name'} Name:
+        %div.controls
+          %input{:type => 'text', :name => 'name', :class => 'text'}
+      %div.control-group
+        %label.control-label{:for => 'email'} Email:
+        %div.controls
+          %input{:type => 'text', :name => 'email', :class => 'text'}
+      %div.control-group
+        %label.control-label{:for => 'department'} Department:
+        %div.controls
+          %input{:type => 'text', :name => 'department', :class => 'text'}
+      %div.control-group
+        %label.control-label{:for => 'password'} Password:
+        %div.controls
+          %input{:type => 'password', :name => 'password', :class => 'text'}
+      %div.control-group
+        %div.controls
+          %input{:type => 'submit', :value => 'Send', :class => 'btn btn-primary'}

@@ -1,13 +1,10 @@
-#container.container_16
-  %div{:class => ['grid_16 center title']}
-    %img{:src => '/images/rusticipong.png', :class => ['center']}  
-  %div{:class => ['grid_16 center blueback title']}
-    %div{:class => ['grid_4 center']}
-      %a{:href => '/', :class => ['button']}Home  
-    %div{:class => ['grid_4 center']}
-      %a{:href => '/new_user', :class => ['button']}Add New User
-    %div{:class => ['grid_4 center']}
-      %a{:href => '/new_game', :class => ['button']}Add Singles Results
-    %div{:class => ['grid_4 center']}
-      %a{:href => '/new_doubles_game', :class => ['button']}Add Doubles Results
-  
+%div.row
+  %div.span12.text-center
+    %img{:src => '/images/rusticipong.png', :class => ['center']}
+%div.row
+  %div.btn-group.offset2{:style => 'width: 100%;'}
+    %a.btn.btn-large.span2{:href => '/'}Home
+    %a.btn.btn-large.span2{:href => '/new_user'}Add New User
+    %a.btn.btn-large.span2{:href => '/new_game'}Add Singles Results
+    %a.btn.btn-large.span2{:href => '/new_doubles_game'}Add Doubles Results
+

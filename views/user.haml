@@ -1,11 +1,10 @@
-%script{:type => 'text/javascript', :src => '/js/highcharts.js'}
 :javascript
   userId = "#{@user.id}"
-%script{:type => 'text/javascript', :src => '/js/user_chart.js'}
+
 #container.container_16
   %div{:class => ['grid_5 prefix_2 suffix_1']}
-    %h3.center Last 10 Set Results
-    %table.pp.center
+    %h3 Last 10 Set Results
+    %table.table.table-hover.table-condensed
       %tr 
         %th Winner
         %th Loser
@@ -16,8 +15,8 @@
           %td="#{link_to_player(set[:loser], @user[:name])} (#{set[:loser_elo]})"
           %td=set[:num_games]
   .grid_5
-    %h3.center All Game Results
-    %table.pp
+    %h3 All Game Results
+    %table.table.table-hover.table-condensed
       %tr 
         %th Winner
         %th Loser
@@ -35,3 +34,4 @@
   .clear
   %div{:class => ['grid_14 prefix_1 suffix_1']}
     %div{:id => 'smChart', :width => '100%'}
+%script{:type => 'text/javascript', :src => '/js/user_chart.js'}
