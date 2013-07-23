@@ -1,0 +1,6 @@
+%div.control-group
+  %label.control-label{:for => "player#{locals[:n]}"}Player #{locals[:n]}:
+  %div.controls
+    %select.input-medium{:id => "p#{locals[:n]}", :name => "player#{locals[:n]}"}
+      - @players.each do |player|
+        %option{:value => player}=player

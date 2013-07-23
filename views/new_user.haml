@@ -1,13 +1,10 @@
-#container.container_16
-  %br  
-  %form{ :action => "/new_user", :method => "post"}
-    %fieldset
-      %label{:for => "name"} Name:
-      %input{:type => "text", :name => "name", :class => "text"}
-      %label{:for => "email"} Email:
-      %input{:type => "text", :name => "email", :class => "text"}
-      %label{:for => "department"} Department:
-      %input{:type => "text", :name => "department", :class => "text"}
-      %label{:for => "password"} Password:
-      %input{:type => "password", :name => "password", :class => "text"}
-    %input{:type => "submit", :value => "Send", :class => "button"}
+%div.page-header
+  %h3.text-center Add New User
+%div.row-fluid
+  %form.form-horizontal{:action => '/new_user', :method => 'post'}
+    =haml :new_user_inner, :layout => false
+    %hr
+    %div.offset4.span3
+      %div.control-group
+        %div.controls
+          %input.btn.btn-primary.btn-large.btn-block{:type => 'submit', :value => 'Save'}

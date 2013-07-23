@@ -1,12 +1,18 @@
-%html
+<!DOCTYPE html>
+%html{:lang => 'en'}
   %head
-    %script{:type => 'text/javascript', :src => '/js/jquery.1.5.1.min.js'}
-    %script{:type => 'text/javascript', :src => '/js/elo_form.js'}
-    %link{:type => 'text/css', :rel => 'stylesheet', :href => '/css/960.css'}
+    %link{:type => 'text/css', :rel => 'stylesheet', :href => '/css/bootstrap.min.css'}
+    %link{:type => 'text/css', :rel => 'stylesheet', :href => '/css/bootstrap-responsive.min.css'}
     %link{:type => 'text/css', :rel => 'stylesheet', :href => '/css/stylesheet.css'}
     %title Rustici Pong Ladder
-  %body.bp
-    =haml :nav, :layout => false
-    %br
-    = yield
-    =haml :foot, :layout => false
+  %body{:style => 'background-color: #8b8989;'}
+    %div{:class => 'container-fluid'}
+      =haml :nav, :layout => false
+      %script{:type => 'text/javascript', :src => '/js/jquery-1.10.2.min.js'}
+      %script{:type => 'text/javascript', :src => '/js/highcharts.js'}
+      %script{:type => 'text/javascript', :src => '/js/jquery.tablesorter.min.js'}
+      %script{:type => 'text/javascript', :src => '/js/bootstrap.min.js'}
+      %script{:type => 'text/javascript', :src => '/js/elo_form.js'}
+      %script{:type => 'text/javascript', :src => '/js/gametracker.js'}
+      = yield
+      =haml :foot, :layout => false

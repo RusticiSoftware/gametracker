@@ -1,0 +1,15 @@
+%h6
+  Game #{locals[:n]}
+  = locals[:necessary] == false ? '(if necessary)' : nil
+%div.control-group
+  %label.control-label{:for => "served#{locals[:n]}"} Served:
+  %div.controls
+    %select.input-medium{:id => "s#{locals[:n]}", :name => "served#{locals[:n]}"}
+%div.control-group
+  %label.control-label{:for => "winner#{locals[:n]}"} Winner:
+  %div.controls
+    %select.input-medium{:id => "w#{locals[:n]}", :name => "winner#{locals[:n]}"}
+%div.control-group
+  %label.control-label{:for => "score#{locals[:n]}"} Score:
+  %div.controls
+    %input.input-medium{:id => "sc#{locals[:n]}", :type => 'text', :name => "score#{locals[:n]}"}
