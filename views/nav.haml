@@ -1,8 +1,8 @@
 -# coding: utf-8
 %div.row-fluid
-  %div.span12.text-center
+  %div.text-center
     %img{:src => '/images/rusticipong.png'}
-%div.row-fluid
+%div.row-fluid.top-buffer
   %div#new_user_modal.modal.hide.fade
     %form.modal-form.form-horizontal{:action => '/new_user', :method => 'post'}
       %div.modal-header
@@ -32,9 +32,10 @@
           =haml :new_doubles_game_inner, :layout => false
       %div.modal-footer
         %input.btn.btn-primary.btn-large{:type => 'submit', :value => 'Save'}
-  %div.btn-group.offset2{:style => 'width: 100%;'}
-    %a.btn.btn-large.btn-blueback.span2{:href => '/'}Home
-    %a#new_user.btn.btn-large.btn-blueback.span2{:href => '/new_user'}Add New User
-    %a#new_game.btn.btn-large.btn-blueback.span2{:href => '/new_game'}Add Singles Results
-    %a#new_doubles_game.btn.btn-large.btn-blueback.span2{:href => '/new_doubles_game'}Add Doubles Results
+  %div.text-center
+    %div.btn-group
+      %a.btn.btn-large.btn-primary{:href => '/'}Home
+      %a#new_user.btn.btn-large.btn-primary{:href => '/new_user'}Add New User
+      %a#new_game.btn.btn-large.btn-primary{:href => '/new_game'}Add Singles Results
+      %a#new_doubles_game.btn.btn-large.btn-primary{:href => '/new_doubles_game'}Add Doubles Results
 

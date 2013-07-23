@@ -1,36 +1,95 @@
-:javascript
-  userId = "#{@user.id}"
+%div.row-fluid
+  %ul.nav.nav-pills
+    %li.active
+      %a{:href => '#last10', 'data-toggle' => 'pill'}Last 10 Set Results
+    %li
+      %a{:href => '#all', 'data-toggle' => 'pill'}All Game Results
+    %li
+      %a{:href => '#chart', 'data-toggle' => 'pill'}Chart
+  %div.tab-content
+    %div#last10.tab-pane.active
+      %table.table.table-hover.table-condensed.table-bordered.tablesorter
+        %thead
+          %tr
+            %th Winner
+            %th Loser
+            %th # of Games
+        %tbody
+          - @sets.each do |set|
+            %tr
+              %td="#{link_to_player(set[:winner], @user[:name])} (#{set[:winner_elo]})"
+              %td="#{link_to_player(set[:loser], @user[:name])} (#{set[:loser_elo]})"
+              %td=set[:num_games]
+    %div#all.tab-pane
+      %table.table.table-hover.table-condensed.table-bordered.tablesorter
+        %caption
+          %b Server is in uppercase
+        %thead
+          %tr
+            %th Winner
+            %th Loser
+            %th Score
+            -#%th Date
+        %tbody
+          - @games.each do |game|
+            - served = Player.name_from_id(game[:served])
+            - winner = ((game[:served].to_i == game[:winner_id]) ? Player.name_from_id(game[:winner_id]).upcase : Player.name_from_id(game[:winner_id]))
+            - loser  =  (game[:served].to_i == game[:loser_id]) ? Player.name_from_id(game[:loser_id]).upcase : Player.name_from_id(game[:loser_id])
+            %tr
+              %td="#{link_to_player(winner, @user[:name])} (#{game[:winner_elo]})"
+              %td="#{link_to_player(loser, @user[:name])} (#{game[:loser_elo]})"
+              %td= "#{game[:winner_score]}-#{game[:loser_score]}"
+    %div#chart.tab-pane
+      %div.row-fluid{:style => 'width: 100%;'}
+        %div{:id => 'smChart', :width => '100%'}
+%div.row-fluid
+  %div.btn-group
+    %a.btn.btn-primary.dropdown-toggle{'data-toggle' => 'dropdown', :href => '#'}
+      Status
+      %span.caret
+    %ul.dropdown-menu
+      %li
+        %a#activate
+          = @user[:active] ? '<i class="icon-ok"></i> ' : nil
+          Active
+      %li
+        %a#deactivate
+          = !@user[:active] ? '<i class="icon-ok"></i> ' : nil
+          Inactive
 
-%div.row-fluid
-  %h3 Last 10 Set Results
-  %table.table.table-hover.table-condensed
-    %tr
-      %th Winner
-      %th Loser
-      %th # of Games
-    - @sets.each do |set|
-      %tr
-        %td="#{link_to_player(set[:winner], @user[:name])} (#{set[:winner_elo]})"
-        %td="#{link_to_player(set[:loser], @user[:name])} (#{set[:loser_elo]})"
-        %td=set[:num_games]
-%div.row-fluid
-  %h3 All Game Results
-  %table.table.table-hover.table-condensed
-    %tr
-      %th Winner
-      %th Loser
-      %th Score
-      -#%th Date
-    - @games.each do |game|
-      - served = Player.name_from_id(game[:served])
-      - winner = ((game[:served].to_i == game[:winner_id]) ? Player.name_from_id(game[:winner_id]).upcase : Player.name_from_id(game[:winner_id]))
-      - loser  =  (game[:served].to_i == game[:loser_id]) ? Player.name_from_id(game[:loser_id]).upcase : Player.name_from_id(game[:loser_id])
-      %tr
-        %td="#{link_to_player(winner, @user[:name])} (#{game[:winner_elo]})"
-        %td="#{link_to_player(loser, @user[:name])} (#{game[:loser_elo]})"
-        %td= "#{game[:winner_score]}-#{game[:loser_score]}"
-  %b Server is in uppercase
-.clear
-%div.row-fluid
-  %div{:id => 'smChart', :width => '100%'}
-%script{:type => 'text/javascript', :src => '/js/user_chart.js'}
+:javascript
+  gametracker.userId = #{@user.id};
+
+
+  $.get('/sm_data', {user_id: gametracker.userId}, function(json){
+
+    chart = new Highcharts.Chart({
+    chart: {
+      renderTo: 'smChart',
+      defaultSeriesType: 'column'
+    },
+    title: {
+      text: 'Game Results - Marshall Impact'
+    },
+    xAxis: {
+      categories: json.opponents,
+      labels: {
+        rotation: -90
+      }
+    },
+    tooltip: {
+      formatter: function() {
+        return ''+
+          'vs '+ this.x +'';
+      }
+    },
+    credits: {
+      enabled: false
+    },
+    series: [{
+      name: 'Opponents',
+      data: json.data
+    }]
+
+    });
+  }, "json");

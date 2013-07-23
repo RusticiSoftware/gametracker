@@ -102,6 +102,8 @@ var gametracker = gametracker || {};
     }
 
     $(document).ready(function () {
+        $("table.tablesorter").tablesorter();
+
         $("#new_user").click(function (e) {
             if (e) {
                 e.preventDefault();
@@ -130,5 +132,41 @@ var gametracker = gametracker || {};
             modalEl.on("shown", gametracker.newDoublesGameShown);
             modalEl.modal(modalOpts);
         });
+
+        $("#activate").click(function (e) {
+            if (e) {
+                e.preventDefault();
+            }
+
+            var userId = gametracker.userId || null;
+
+            $.ajax('/user/' + userId, {
+                type: 'put',
+                data: {
+                    active: true
+                },
+                success: function () {
+                    location.reload();
+                }
+            });
+        });
+
+        $("#deactivate").click(function (e) {
+            if (e) {
+                e.preventDefault();
+            }
+
+            var userId = gametracker.userId || null;
+
+            $.ajax('/user/' + userId, {
+                type: 'put',
+                data: {
+                    active: false
+                },
+                success: function () {
+                    location.reload();
+                }
+            });
+        })
     });
 })();
