@@ -3,9 +3,21 @@
     <words>
       <w>activesupport</w>
       <w>bcrypt</w>
+      <w>booleans</w>
       <w>bundler</w>
+      <w>doublegames</w>
+      <w>dsets</w>
+      <w>gameset</w>
+      <w>gametracker</w>
       <w>haml</w>
+      <w>initheader</w>
+      <w>mailto</w>
+      <w>mbox</w>
       <w>rubygems</w>
+      <w>rustici</w>
+      <w>tcapi</w>
+      <w>tttpp</w>
+      <w>unranked</w>
     </words>
   </dictionary>
 </component>
