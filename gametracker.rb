@@ -288,7 +288,7 @@ class GameTracker < Sinatra::Application
     req = Net::HTTP::Post.new(@post_watershed, initheader = {'Content-Type' => 'application/json'})
     req.basic_auth @user_watershed, @pass_watershed
     req.body = @payload_95
-    response = http.request(req)
+    response = Net::HTTP.new(@host, @port).start { |http| http.request(req) }
     puts "Response #{response.code} #{response.message}:#{response.body}"
 
 
@@ -357,11 +357,11 @@ class GameTracker < Sinatra::Application
   def find_previous_elo(player, id)
     previous_game = Game.filter(:winner_id => player).or(:loser_id => player).filter(:id < id).order(:id).last
     if previous_game == nil
-      return
+
     elsif player == previous_game[:winner_id]
       return previous_game[:winner_elo]
     else
-      return previous_game[:loser_elo]
+      previous_game[:loser_elo]
     end
   end
 
