@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="RUBY_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/.idea" />
+      <excludeFolder url="file://$MODULE_DIR$/.sass-cache" />
+    </content>
+    <orderEntry type="jdk" jdkName="RVM: ruby-1.8.7-p374 [gametracker]" jdkType="RUBY_SDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" scope="PROVIDED" name="sass-stdlib" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="activerecord (v2.3.2, RVM: ruby-1.8.7-p374 [gametracker]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="activesupport (v2.3.2, RVM: ruby-1.8.7-p374 [gametracker]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="bcrypt-ruby (v2.1.4, RVM: ruby-1.8.7-p374 [gametracker]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="bundler (v1.3.5, RVM: ruby-1.8.7-p374 [gametracker]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="haml (v2.2.24, RVM: ruby-1.8.7-p374 [gametracker]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="json (v1.4.6, RVM: ruby-1.8.7-p374 [gametracker]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="pg (v0.9.0, RVM: ruby-1.8.7-p374 [gametracker]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rack (v1.2.1, RVM: ruby-1.8.7-p374 [gametracker]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rack-flash (v0.1.1, RVM: ruby-1.8.7-p374 [gametracker]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rake (v0.9.2.2, RVM: ruby-1.8.7-p374 [gametracker]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="sass (v3.1.0.alpha.23, RVM: ruby-1.8.7-p374 [gametracker]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="sequel (v3.17.0, RVM: ruby-1.8.7-p374 [gametracker]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="shotgun (v0.9, RVM: ruby-1.8.7-p374 [gametracker]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="sinatra (v1.0, RVM: ruby-1.8.7-p374 [gametracker]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="sinatra-redirect-with-flash (v0.1.2, RVM: ruby-1.8.7-p374 [gametracker]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="sqlite3 (v1.3.6, RVM: ruby-1.8.7-p374 [gametracker]) [gem]" level="application" />
+  </component>
+</module>
+

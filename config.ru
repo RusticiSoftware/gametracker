@@ -1,11 +1,9 @@
 require 'gametracker'
 
 set :root, File.dirname(__FILE__)
-
-if ENV['RACK_ENV'] != 'production'
-  log = File.new("sinatra.log", "a+")
-  $stdout.reopen(log)
-  $stderr.reopen(log)
-end
+set :environment, :development
+log = File.new("sinatra.log", "a+")
+$stdout.reopen(log)
+$stderr.reopen(log)
 
 run GameTracker

@@ -1,13 +1,41 @@
-#container.container_16
-  %div{:class => ['grid_16 center title']}
-    %img{:src => '/images/rusticipong.png', :class => ['center']}  
-  %div{:class => ['grid_16 center blueback title']}
-    %div{:class => ['grid_4 center']}
-      %a{:href => '/', :class => ['button']}Home  
-    %div{:class => ['grid_4 center']}
-      %a{:href => '/new_user', :class => ['button']}Add New User
-    %div{:class => ['grid_4 center']}
-      %a{:href => '/new_game', :class => ['button']}Add Singles Results
-    %div{:class => ['grid_4 center']}
-      %a{:href => '/new_doubles_game', :class => ['button']}Add Doubles Results
-  
+-# coding: utf-8
+%div.row-fluid
+  %div.text-center
+    %img{:src => '/images/rusticipong.png'}
+%div.row-fluid.top-buffer
+  %div#new_user_modal.modal.hide.fade
+    %form.modal-form.form-horizontal{:action => '/new_user', :method => 'post'}
+      %div.modal-header
+        %button.close{:type => 'button', 'data-dismiss' => 'modal', 'aria-hidden' => 'true'} &times;
+        %h3 Add New User
+      %div.modal-body
+        =haml :new_user_inner, :layout => false
+      %div.modal-footer
+        %input.btn.btn-primary.btn-large{:type => 'submit', :value => 'Save'}
+  %div#new_game_modal.modal.modal-wide.hide.fade
+    %form.modal-form.form-horizontal{ :action => '/new_game', :method => 'post'}
+      %div.modal-header
+        %button.close{:type => 'button', 'data-dismiss' => 'modal', 'aria-hidden' => 'true'} &times;
+        %h3 Add New Game
+      %div.modal-body
+        %div.container-fluid
+          =haml :new_game_inner, :layout => false
+      %div.modal-footer
+        %input.btn.btn-primary.btn-large{:type => 'submit', :value => 'Save'}
+  %div#new_doubles_game_modal.modal.modal-wide.hide.fade
+    %form.modal-form.form-horizontal.form-horizontal-tight{ :action => '/new_doubles_game', :method => 'post'}
+      %div.modal-header
+        %button.close{:type => 'button', 'data-dismiss' => 'modal', 'aria-hidden' => 'true'} &times;
+        %h3 Add New Doubles Game
+      %div.modal-body
+        %div.container-fluid
+          =haml :new_doubles_game_inner, :layout => false
+      %div.modal-footer
+        %input.btn.btn-primary.btn-large{:type => 'submit', :value => 'Save'}
+  %div.text-center
+    %div.btn-group
+      %a.btn.btn-large.btn-primary{:href => '/'}Home
+      %a#new_user.btn.btn-large.btn-primary{:href => '/new_user'}Add New User
+      %a#new_game.btn.btn-large.btn-primary{:href => '/new_game'}Add Singles Results
+      %a#new_doubles_game.btn.btn-large.btn-primary{:href => '/new_doubles_game'}Add Doubles Results
+
